@@ -20,6 +20,8 @@ Options:
   
 ## Requirements
 
+Bash
+
 Python
 
 GDB with Python support
