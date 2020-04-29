@@ -1,0 +1,54 @@
+#!/bin/bash
+
+usage="usage: ./fgraph [sai]r | [s]p [save_name] [input_file] binary [args ...]\n\nOptions:\n
+s - indicate a name for the save file of the graph\n
+a - provide command line arguments into the binary (cannot be used with option p)\n
+i - provide a file to redirect stdin (cannot be used with option p)\n
+r - get a graph of the executed functions within a run of the binary (cannot be used with option p)\n
+p - get a graph of the functions explicitly called in the assembly code (cannot be used with option r)"
+
+if [[ $# -lt 2 || ( $1 != *"r"* && $1 != *"p"* ) || ($1 != *"a"* && $# -ne $((${#1} + 1))) ]]; then
+	echo -e $usage
+	exit 1
+fi
+
+validop="saipr"
+
+for ((i = 0; i < ${#1}; i++ )); do
+	char=${1:$i:1}
+	if [[ $validop == *$char* ]]; then
+		validop=$(echo $validop | tr -d $char)
+		if [[ $char == "a" || $char == "i" || $char == "r" ]]; then
+			validop=$(echo $validop | tr -d p)
+		elif [ $char == "p" ]; then
+			validop=$(echo $validop | tr -d air)
+		fi
+	else
+		echo -e $usage
+		exit 1
+	fi
+done
+
+pyArgs="python argv = []; "
+
+for arg in $@; do
+	pyArgs="$pyArgs argv.append('$arg'); "
+done
+
+gdb -ex "$pyArgs" -q -x fgraph.py 2> /dev/null
+
+if [[ $1 == *"s"* ]]; then
+	if [ ! -f $2.dot ]; then
+		echo "Graph generation failed."
+	else
+		sfdp -x -Goverlap=scale -Glayout=dot -Tsvg $2.dot > $2.svg
+		echo "Graph generation complete."
+	fi
+else
+	if [ ! -f fgraphout.dot ]; then
+		echo "Graph generation failed."
+	else
+		sfdp -x -Goverlap=scale -Glayout=dot -Tsvg fgraphout.dot > fgraphout.svg
+		echo "Graph generation complete."
+	fi
+fi

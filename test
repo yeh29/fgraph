@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "Test 1 - Running: ./fgraph sir ./tests/test1/test1out ./tests/test1/test1in ./tests/test1/heapme"
+./fgraph sir ./tests/test1/test1out ./tests/test1/test1in ./tests/test1/heapme
+
+echo "Test 2 - Running: ./fgraph sir ./tests/test2/test2out ./tests/test2/test2in ./tests/test2/mathizhard"
+./fgraph sir ./tests/test2/test2out ./tests/test2/test2in ./tests/test2/mathizhard
+
+echo "Test 3 - Running: ./fgraph sp ./tests/test3/test3out ./tests/test3/mathizhard"
+./fgraph sp ./tests/test3/test3out ./tests/test3/mathizhard
+
+echo "Test 4 - Running: ./fgraph sir ./tests/test4/test4out ./tests/test4/test4in ./tests/test4/innocentflesh"
+./fgraph sir ./tests/test4/test4out ./tests/test4/test4in ./tests/test4/innocentflesh
